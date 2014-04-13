@@ -50,7 +50,7 @@ MAIN = nctest
 .PHONY: depend clean
 
 all:    $(MAIN)
-		@echo  Simple compiler named nctest has been compiled
+		@echo $(MAIN) has been compiled
 
 $(MAIN): $(OBJS) 
 		$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
