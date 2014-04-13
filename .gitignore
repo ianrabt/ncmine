@@ -19,3 +19,6 @@
 
 # Temporary files
 *.swp
+
+# Doxygen
+doc/*
