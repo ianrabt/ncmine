@@ -39,7 +39,7 @@ SRCS = main.c display.c mine.c
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
-MAIN = nctest
+MAIN = ncmine
 
 #
 # The following part of the makefile is generic; it can be used to 
