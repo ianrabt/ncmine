@@ -86,6 +86,43 @@ void printd(int size, Mine **board)
 
 void getin(int *x, int *y)
 {
-	*x = 0;
-	*y = 0;
+	input_loop: // infinite
+	{
+		*x = -1; *y = -1;
+		char input[BUFSIZ];
+		printf("> ");
+		if(fgets(input, sizeof(input), stdin) != NULL) {
+			char *p;
+			// trim '\n' from end of the string.
+			if((p = strchr(input, '\n')) != NULL) {
+				*p = '\0';
+			}
+			
+			int i;
+			for(int i = 0; input[i]; i++) {
+				if(input[i] >= 'a' && input[i] <= 'a' + size) {
+					if(i == 0)
+						goto input_loop;
+					break;
+				}
+
+				if(input[i] < '0' || input[i] > '1' + size) {
+					goto input_loop;
+				}
+			}
+
+			int y_val = atoi(input);
+			char *x_val = &input[i];
+			if(y_val > 0 && y_val <= size) {
+				if(*x_val >= 'a' && *x_val < 'a' + size) {
+					*x = (int) *x_val - 'a';
+					*y = y_val - 1;
+					goto exit_loop; // input is finally valid
+                }
+            }
+		}
+
+		goto input_loop;
+	}
+	exit_loop:
 }
