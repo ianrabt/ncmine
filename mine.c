@@ -114,3 +114,12 @@ void init_adj_mines(int size, Mine **board)
         }
     }
 }
+
+void reveal_board(int size, Mine** board)
+{
+	for (int y = 0; y < size; y++) {
+		for (int x = 0; x < size; x++) {
+			board[x][y].visible = true;
+		}
+	}
+}

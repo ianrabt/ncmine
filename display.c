@@ -1,49 +1,91 @@
 #include <ncurses.h>
+#include <string.h>
 #include "display.h"
 #include "mine.h"
 
 DisplayMode mode;
 
 int startd(DisplayMode _mode)
-{/*
+{
 	mode = _mode;
-	initscr();
-	printw("hello world");
-	refresh();
-	getch();*/
+	switch(mode) {
+		case TEXT:
+			// do nothing
+			break;
+		case NCURSES:
+			// declarations do not count as statements...need an empty one.
+			;
+			char *title = "MINESWEEPER";
+			char *sub   = "by Ian Taylor";
+			char *start = "press any key to start";
+			int row, col;
+
+			initscr();
+			getmaxyx(stdscr, row, col);
+			attron(A_BOLD);
+			mvprintw(row/2-1, (col-strlen(title))/2, "%s", title);
+			attroff(A_BOLD);
+			mvprintw(row/2,   (col-strlen(title))/2, "%s", sub);
+			mvprintw(row*2/3, (col-strlen(start))/2, "%s", start);
+			refresh();
+			getch();
+			break;
+	}
+
 	return 0;
 }
 
 int exitd(void)
 {
-	endwin();
+	switch(mode) {
+		case TEXT:
+			// do nothing
+			break;
+		case NCURSES:
+			endwin();
+			break;
+	}
 	return 0;
 }
 
 void printd(int size, Mine **board)
-{/*
-	printw("yes");
-	getch();*/
+{
+	switch(mode) {
+		case TEXT:
+			printf("    ");
+			for(char header  = 'a'; header - 'a' < size; header++) {
+				printf("%c ", header);
+			}
+			printf("\n");
 
-	printf("    ");
-	for(char header  = 'a'; header - 'a' < size; header++) {
-		printf("%c ", header);
+			for(int y = 0; y < size; y++) {
+				printf("%3d ", y + 1);
+        		for(int x = 0; x < size; x++) {
+					if(board[x][y].visible) {
+						if(board[x][y].adj_mines == 9)
+							printf("@ ");
+						else if(board[x][y].adj_mines == 0)
+							printf("  ");
+						else
+							printf("%d ", board[x][y].adj_mines);
+					} else {
+						printf("# ");
+					}
+        		}
+				printf("\n");
+			}
+			break;
+
+		case NCURSES:
+			clear();
+			printw("yes");
+			getch();
+			break;
 	}
-	printf("\n");
-
-	for(int y = 0; y < size; y++) {
-		printf("%3d ", y + 1);
-        for(int x = 0; x < size; x++) {
-			if(board[x][y].adj_mines == 9)
-				printf("# ");
-			else
-            	printf("%d ", board[x][y].adj_mines);
-        }
-        printf("\n");
-    }
 }
 
 void getin(int *x, int *y)
 {
-	//
+	*x = 0;
+	*y = 0;
 }
