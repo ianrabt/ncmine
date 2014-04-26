@@ -9,18 +9,7 @@ int main (int argc, char** argv)
 	int size = 15;
 	Mine **board = create_board(size, .15);
 
-	DisplayMode mode;
-	if (argc <= 1) {
-		mode = NCURSES;
-	} else if (!strcmp(argv[1], "ncurses")) {
-		mode = NCURSES;
-	} else if (!strcmp(argv[1], "text")) {
-		mode = TEXT;
-	} else {
-		mode = NCURSES;
-	}
-
-	startd(mode);
+	startd();
 	bool gameover = false;
 	while (!gameover) {
 		int x, y;
