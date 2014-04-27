@@ -6,16 +6,16 @@
 
 int main (int argc, char** argv)
 {
-	int size = 15;
+	int size = 10;
 	Mine **board = create_board(size, .15);
 
-	startd();
+	startd(size);
 	bool gameover = false;
 	while (!gameover) {
 		int x, y;
 		printd(size, board);
 		getin(&x, &y);
-		board[x][y].visible = true;
+		reveal_mines(x, y, size, board);
 		if (board[x][y].adj_mines == -1)
 			gameover = true;
 	}
