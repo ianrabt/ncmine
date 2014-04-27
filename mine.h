@@ -17,5 +17,6 @@ typedef struct
 bool is_valid(int x, int y, int size);
 Mine **create_board(int size, double mine_prob);
 void reveal_board(int size, Mine** board);
+void reveal_mines(int x, int y, int size, Mine** board);
 
 #endif

@@ -123,3 +123,40 @@ void reveal_board(int size, Mine** board)
 		}
 	}
 }
+
+void find_mine(int size, Mine** board, const Mine *query, int *x, int *y)
+{
+    assert(x != NULL);
+    assert(y != NULL);
+    assert(query != NULL);
+
+    for(*y = 0; *y < size; (*y)++) {
+        for(*x = 0; *x < size; (*x)++) {
+            if(&board[*x][*y] == query) {
+                return;
+            }
+        }
+    }
+    *x = -1; *y = -1;
+}
+
+void reveal_mines(int x, int y, int size, Mine** board)
+{
+    board[x][y].visible = true;
+	if (board[x][y].adj_mines != 0)
+		return;
+    Mine *mines_array[9];
+    Mine **mines = mines_array;
+    get_adj_mines(mines_array, size, board, x, y);
+    while(*mines) {
+        if(!(**mines).visible) {
+            (**mines).visible = true;
+            if((**mines).adj_mines == 0) {
+                int x2, y2;
+                find_mine(size, board, *mines, &x2, &y2);
+                reveal_mines(x2, y2, size, board);
+            }
+        }
+        mines++;
+    }
+}
