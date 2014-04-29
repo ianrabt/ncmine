@@ -90,6 +90,23 @@ static void offsetcur(int offy, int offx)
 	move(y + offy, x + offx);
 }
 
+/**
+ * assumes that window has a border that may not be overwritten
+ */
+static bool iscurin(WINDOW *win)
+{
+	// top left corner of the window:
+	int ybeg, xbeg;
+	getbegyx(win, ybeg, xbeg);
+	// bottom right corner:
+	int ymax, xmax;
+	getmaxyx(win, ymax, xmax);
+	// physical cursor's current possition:
+	int ycur, xcur;
+	getyx(stdscr, ycur, xcur);
+
+	return (ycur > ybeg && xcur > xbeg) && (ycur < ymax && xcur < xmax);
+}
 
 void getin(int *x, int *y)
 {
@@ -106,20 +123,24 @@ void getin(int *x, int *y)
 		offsetcur(0, 0);
 		switch(in)
 		{
+			case 'a':
 			case KEY_LEFT:
 				offsetcur(0, -2);
 				break;
+			case 'd':
 			case KEY_RIGHT:
 				offsetcur(0, 2);
 				break;
+			case 'w':
 			case KEY_UP:
 				offsetcur(-1, 0);
 				break;
+			case 's':
 			case KEY_DOWN:
 				offsetcur(1, 0);
 				break;
 		}
-	} while (in > '9' || in < '0');
-	*x = in - '0';
-	*y = 0;
+	} while (in != '\n' && in != '\r');
+	*x = 1;
+	*y = 1;
 }
