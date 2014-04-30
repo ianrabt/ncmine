@@ -1,11 +1,12 @@
 #include <ncurses.h>
 #include <string.h>
+#include <assert.h>
 #include "display.h"
 #include "mine.h"
 
 WINDOW *board_win;
 WINDOW *info_win;
-static int prev_y, prev_x;
+static int prev_y = 0, prev_x = 0;
 
 void reset_cur(void)
 {
@@ -64,6 +65,8 @@ int startd(int size)
 
 void mvwincenter(WINDOW *win)
 {
+	assert(win != NULL);
+
 	int max_x, max_y, win_x, win_y;
 	getmaxyx(stdscr, max_x, max_y);
 	getmaxyx(win, win_x, win_y);
@@ -80,6 +83,7 @@ int exitd(void)
 
 char getminech(Mine* mine)
 {
+	assert(mine != NULL);
 	if (mine->visible) {
 		if (is_mine(mine)) {
 			return '@';
@@ -93,6 +97,8 @@ char getminech(Mine* mine)
 
 void printd(int size, Mine **board)
 {
+	assert(board != NULL);
+
 	// reset window position to center
 	clear();
 	mvwincenter(board_win);
@@ -100,6 +106,7 @@ void printd(int size, Mine **board)
 
 	mvwprintw(board_win, 0, 0, "\n");
 	for (int y = 0; y < size; y++) {
+		assert(board[y] != NULL);
 		for (int x = 0; x < size; x++) {
 			wprintw(board_win, " %c", getminech(&board[x][y]));
 		}
@@ -120,6 +127,12 @@ static void offsetcur(int offy, int offx)
 
 static void get_bounds(WINDOW *win, int *y1, int *x1, int *y2, int *x2)
 {
+	assert(win != NULL);
+	assert(y1 != NULL);
+	assert(x1 != NULL);
+	assert(y2 != NULL);
+	assert(x2 != NULL);
+
 	// top left corner of the window:
 	int ybeg, xbeg;
 	getbegyx(win, ybeg, xbeg);
@@ -136,6 +149,8 @@ static void get_bounds(WINDOW *win, int *y1, int *x1, int *y2, int *x2)
  */
 static bool is_in_win(WINDOW *win, int y, int x)
 {
+	assert(win != NULL);
+
 	// top left corner of the window:
 	int ybeg, xbeg, yend, xend;
 	get_bounds(win, &ybeg, &xbeg, &yend, &xend);
@@ -158,6 +173,9 @@ void move_board_cur(int offy, int offx)
  */
 void get_board_yx(int *y, int *x)
 {
+	assert(y != NULL);
+	assert(x != NULL);
+
 	int ycur, xcur;
 	getyx(stdscr, ycur, xcur);
 	int ywin, xwin;
@@ -170,6 +188,9 @@ void get_board_yx(int *y, int *x)
 
 void getin(int *x, int *y)
 {
+	assert(y != NULL);
+	assert(x != NULL);
+
 	reset_cur();
 	int in;
 	do {
