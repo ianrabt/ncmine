@@ -12,6 +12,7 @@ bool is_valid(int x, int y, int size)
 
 bool is_mine(Mine *mine)
 {
+	assert(mine != NULL);
 	return mine->adj_mines == 9;
 }
 
@@ -31,7 +32,7 @@ Mine **create_board(int size, double mine_prob)
 {
 	// allocating memory for the board.
 	Mine **board;
-	board = (Mine **) malloc(sizeof(Mine *)*size);
+	board = (Mine **) malloc(sizeof(Mine *) * size);
 	if(board == NULL) {
 		fprintf(stderr, "out of memory.\n");
 		abort();
@@ -99,6 +100,8 @@ void get_adj_mines(Mine *mines[9], int size, Mine **board, int x, int y)
 
 void init_adj_mines(int size, Mine **board)
 {
+	assert(size > 0);
+
     for(int y = 0; y < size; y++) {
         for(int x = 0; x < size; x++) {
             if(board[x][y].adj_mines != -1) { // if the square is a mine,
@@ -122,6 +125,8 @@ void init_adj_mines(int size, Mine **board)
 
 void reveal_board(int size, Mine** board)
 {
+	assert(size > 0);
+
 	for (int y = 0; y < size; y++) {
 		for (int x = 0; x < size; x++) {
 			board[x][y].visible = true;
@@ -131,6 +136,7 @@ void reveal_board(int size, Mine** board)
 
 void find_mine(int size, Mine** board, const Mine *query, int *x, int *y)
 {
+	assert(size > 0);
     assert(x != NULL);
     assert(y != NULL);
     assert(query != NULL);
@@ -147,6 +153,12 @@ void find_mine(int size, Mine** board, const Mine *query, int *x, int *y)
 
 void reveal_mines(int x, int y, int size, Mine** board)
 {
+	assert(size > 0);
+	assert(x >= 0);
+	assert(y >= 0);
+	assert(x < size);
+	assert(y < size);
+
     board[x][y].visible = true;
 	if (board[x][y].adj_mines != 0)
 		return;
