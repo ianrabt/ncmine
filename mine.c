@@ -10,6 +10,11 @@ bool is_valid(int x, int y, int size)
 	return x >= 0 && y >= 0 && x < size && y < size;
 }
 
+bool is_mine(Mine *mine)
+{
+	return mine->adj_mines == 9;
+}
+
 bool get_prob_result(double prob)
 {
     if(prob >= 1) {

@@ -16,12 +16,12 @@ int main (int argc, char** argv)
 		printd(size, board);
 		getin(&x, &y);
 		reveal_mines(x, y, size, board);
-		if (board[x][y].adj_mines == -1)
+		if (is_mine(&board[x][y]))
 			gameover = true;
 	}
 	reveal_board(size, board);
 	printd(size, board);
-		
+
 	exitd();
 	free(board);
 }

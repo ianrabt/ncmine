@@ -5,6 +5,25 @@
 
 WINDOW *board_win;
 WINDOW *info_win;
+static int prev_y, prev_x;
+
+void reset_cur(void)
+{
+	move(prev_y, prev_x);
+}
+
+void set_cur(void)
+{
+	getyx(stdscr, prev_y, prev_x);
+}
+
+void move_cur_center(void)
+{
+	getbegyx(board_win, prev_y, prev_x);
+	prev_y++;
+	prev_x++;
+	reset_cur();
+}
 
 void mvwincenter(WINDOW *win);
 int startd(int size)
@@ -14,10 +33,12 @@ int startd(int size)
 	char *start = "press any key to start";
 	int row, col;
 
+	// set some settings
 	initscr();
 	cbreak();
 	keypad(stdscr, true);
 	noecho();
+
 	// start screen:
 	getmaxyx(stdscr, row, col);
 	attron(A_BOLD);
@@ -35,6 +56,9 @@ int startd(int size)
 	board_win = newwin(2 + size, 1 + (size * 2), 0, 0);
 	mvwincenter(board_win);
 	box(board_win, 0 , 0);
+
+	move_cur_center();
+
 	return 0;
 }
 
@@ -57,7 +81,11 @@ int exitd(void)
 char getminech(Mine* mine)
 {
 	if (mine->visible) {
-		return mine->adj_mines + (int) '0';
+		if (is_mine(mine)) {
+			return '@';
+		} else {
+			return mine->adj_mines + (int) '0';
+		}
 	} else {
 		return ' ';
 	}
@@ -90,57 +118,79 @@ static void offsetcur(int offy, int offx)
 	move(y + offy, x + offx);
 }
 
-/**
- * assumes that window has a border that may not be overwritten
- */
-static bool iscurin(WINDOW *win)
+static void get_bounds(WINDOW *win, int *y1, int *x1, int *y2, int *x2)
 {
 	// top left corner of the window:
 	int ybeg, xbeg;
 	getbegyx(win, ybeg, xbeg);
 	// bottom right corner:
-	int ymax, xmax;
-	getmaxyx(win, ymax, xmax);
-	// physical cursor's current possition:
+	int yend, xend;
+	getmaxyx(win, yend, xend);
+	yend += ybeg; xend += xbeg; // getmaxyx returns size of win, not coordinates
+	*y1 = ybeg; *x1 = xbeg;
+	*y2 = yend; *x2 = xend;
+}
+
+/**
+ * assumes that window has a border that may not be overwritten
+ */
+static bool is_in_win(WINDOW *win, int y, int x)
+{
+	// top left corner of the window:
+	int ybeg, xbeg, yend, xend;
+	get_bounds(win, &ybeg, &xbeg, &yend, &xend);
+
+	return (y > ybeg && x > xbeg) && (y < yend - 1 && x < xend - 1);
+}
+
+void move_board_cur(int offy, int offx)
+{
 	int ycur, xcur;
 	getyx(stdscr, ycur, xcur);
-
-	return (ycur > ybeg && xcur > xbeg) && (ycur < ymax && xcur < xmax);
+	ycur += offy;
+	xcur += offx;
+	if (is_in_win(board_win, ycur, xcur))
+		offsetcur(offy, offx);
 }
+
+/**
+ * @return: TODO
+ */
+void get_board_yx(int *y, int *x)
+{
+	int ycur, xcur;
+	getyx(stdscr, ycur, xcur);
+	int ywin, xwin;
+	getbegyx(board_win, ywin, xwin);
+	
+	*y = ycur - ywin - 1;
+	*x = (xcur - xwin - 1)/2;
+}
+	
 
 void getin(int *x, int *y)
 {
-	// put cursor in board window
-	{
-		int winx, winy;
-		getbegyx(board_win, winy, winx);
-		move(winy + 1, winx + 1);
-	}
-
+	reset_cur();
 	int in;
 	do {
 		in = getch();
 		offsetcur(0, 0);
-		switch(in)
-		{
-			case 'a':
-			case KEY_LEFT:
-				offsetcur(0, -2);
-				break;
-			case 'd':
-			case KEY_RIGHT:
-				offsetcur(0, 2);
-				break;
-			case 'w':
-			case KEY_UP:
-				offsetcur(-1, 0);
-				break;
-			case 's':
-			case KEY_DOWN:
-				offsetcur(1, 0);
-				break;
+		switch(in) {
+		case KEY_LEFT:
+			move_board_cur(0, -2);
+			break;
+		case KEY_RIGHT:
+			move_board_cur(0, 2);
+			break;
+		case KEY_UP:
+			move_board_cur(-1, 0);
+			break;
+		case KEY_DOWN:
+			move_board_cur(1, 0);
+			break;
 		}
+
 	} while (in != '\n' && in != '\r');
-	*x = 1;
-	*y = 1;
+	get_board_yx(y, x);
+	set_cur();
 }
