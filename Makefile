@@ -6,7 +6,7 @@
 #
 
 # define the C compiler to use
-CC = gcc -std=gnu11
+CC = gcc -std=gnu11 -fdiagnostics-color=auto
 
 # define any compile-time flags
 CFLAGS = -Wall -g -o3
