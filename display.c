@@ -84,6 +84,10 @@ int exitd(void)
 char getminech(Mine* mine)
 {
 	assert(mine != NULL);
+	if(is_flagged(mine)) {
+		return 'f';
+	}
+
 	if (mine->visible) {
 		if (is_mine(mine)) {
 			return '@';
@@ -186,15 +190,15 @@ void get_board_yx(int *y, int *x)
 }
 	
 
-void getin(int *x, int *y)
+enum operation getin(int *x, int *y)
 {
 	assert(y != NULL);
 	assert(x != NULL);
 
 	reset_cur();
-	int in;
+	enum operation op = UNDEFINED;
 	do {
-		in = getch();
+		int in = getch();
 		offsetcur(0, 0);
 		switch(in) {
 		case KEY_LEFT:
@@ -209,9 +213,21 @@ void getin(int *x, int *y)
 		case KEY_DOWN:
 			move_board_cur(1, 0);
 			break;
+		case '\r':
+		case '\n':
+			op = REVEAL_MINE;
+			break;
+		case 'f':
+			op = TOGGLE_FLAG;
+			break;
+		case 'q':
+			op = QUIT;
+			break;
 		}
 
-	} while (in != '\n' && in != '\r');
+	} while (op == UNDEFINED);
+
 	get_board_yx(y, x);
 	set_cur();
+	return op;
 }

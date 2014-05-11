@@ -16,6 +16,18 @@ bool is_mine(Mine *mine)
 	return mine->adj_mines == 9;
 }
 
+bool is_flagged(Mine *mine)
+{
+	assert(mine != NULL);
+	return mine->flagged;
+}
+
+void toggle_flag(Mine *mine)
+{
+	assert(mine != NULL);
+	mine->flagged = !mine->flagged;
+}
+
 bool get_prob_result(double prob)
 {
     if(prob >= 1) {
@@ -59,7 +71,7 @@ Mine **create_board(int size, double mine_prob)
 				board[x][y].adj_mines = -1;
 			}
 			board[x][y].visible = false;
-
+			board[x][y].flagged = false;
 		}
 	}
 

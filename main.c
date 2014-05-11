@@ -13,11 +13,23 @@ int main (int argc, char** argv)
 	bool gameover = false;
 	while (!gameover) {
 		int x, y;
+		enum operation op;
+
 		printd(size, board);
-		getin(&x, &y);
-		reveal_mines(x, y, size, board);
-		if (is_mine(&board[x][y]))
+		op = getin(&x, &y);
+		switch (op) {
+		case TOGGLE_FLAG:
+			toggle_flag(&board[x][y]);
+			break;
+		case REVEAL_MINE:
+			reveal_mines(x, y, size, board);
+			if (is_mine(&board[x][y]))
+				gameover = true;
+			break;
+		default:
 			gameover = true;
+			break;
+		}
 	}
 	reveal_board(size, board);
 	printd(size, board);
