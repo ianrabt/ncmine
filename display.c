@@ -84,9 +84,6 @@ int exitd(void)
 char getminech(Mine* mine)
 {
 	assert(mine != NULL);
-	if(is_flagged(mine)) {
-		return 'f';
-	}
 
 	if (mine->visible) {
 		if (is_mine(mine)) {
@@ -94,6 +91,8 @@ char getminech(Mine* mine)
 		} else {
 			return mine->adj_mines + (int) '0';
 		}
+	} else if(is_flagged(mine)) {
+		return 'f';
 	} else {
 		return ' ';
 	}
@@ -201,18 +200,23 @@ enum operation getin(int *x, int *y)
 		int in = getch();
 		offsetcur(0, 0);
 		switch(in) {
+		case 'h':
 		case KEY_LEFT:
 			move_board_cur(0, -2);
 			break;
+		case 'l':
 		case KEY_RIGHT:
 			move_board_cur(0, 2);
 			break;
+		case 'k':
 		case KEY_UP:
 			move_board_cur(-1, 0);
 			break;
+		case 'j':
 		case KEY_DOWN:
 			move_board_cur(1, 0);
 			break;
+		case ' ':
 		case '\r':
 		case '\n':
 			op = REVEAL_MINE;

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ncurses.h>
 #include "display.h"
 #include "mine.h"
 
@@ -24,14 +25,17 @@ int main (int argc, char** argv)
 			if (is_mine(&board[x][y]))
 				gameover = true;
 			break;
-		default:
+		case QUIT:
 			gameover = true;
+			break;
+		case UNDEFINED:
 			break;
 		}
 	}
 	reveal_board(size, board);
 	printd(size, board);
 
+	getch();
 	exitd();
 	free(board);
 }
