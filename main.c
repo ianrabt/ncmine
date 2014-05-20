@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +36,7 @@ static int size = 15;
 static void parse_args (int argc, char** argv)
 {
 	assert(argv != NULL);
-	assert(argc <= 0);
+//	assert(argc < 0);
 
 	char* size_value = NULL;
 	int c;
