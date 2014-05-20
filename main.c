@@ -25,10 +25,18 @@ static char* version =
 
 // runtime options:
 static bool color_output = true; // defaults to true, display.c will disable color output if unsupported.
-static int size = 10;
+static int size = 15;
 
+/**
+ * Parses command line arguments.
+ *
+ * precondition: 
+ */
 static void parse_args (int argc, char** argv)
 {
+	assert(argv != NULL);
+	assert(argc <= 0);
+
 	char* size_value = NULL;
 	int c;
 	
@@ -55,10 +63,15 @@ static void parse_args (int argc, char** argv)
 			abort();
 		}
 	}
+	if (optind < argc) {
+		size_value = argv[optind];
+		size = atoi(size_value);
+	}
 }
 
 int main (int argc, char** argv)
 {
+	parse_args(argc, argv);
 	Mine **board = create_board(size, .15);
 
 	startd(size);
