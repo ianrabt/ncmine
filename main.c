@@ -36,7 +36,8 @@ static int size = 15;
 static void parse_args (int argc, char** argv)
 {
 	assert(argv != NULL);
-//	assert(argc < 0);
+printf("%d\n", argc);
+	assert(argc >= 0);
 
 	char* size_value = NULL;
 	int c;
@@ -93,7 +94,8 @@ int main (int argc, char** argv)
 				gameover = true;
 			break;
 		case QUIT:
-			gameover = true;
+			exitd();
+			exit(0);
 			break;
 		case UNDEFINED:
 			break;
