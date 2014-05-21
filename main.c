@@ -26,7 +26,7 @@ static char* version =
 
 // runtime options:
 static bool color_output = true; // defaults to true, display.c will disable color output if unsupported.
-static int size = 15;
+static int size = 15; // size of board
 
 /**
  * Parses command line arguments.
@@ -80,7 +80,6 @@ int main (int argc, char** argv)
 	while (!gameover) {
 		int x, y;
 		enum operation op;
-
 		printd(size, board);
 		op = getin(&x, &y);
 		switch (op) {
