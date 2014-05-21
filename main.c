@@ -36,7 +36,6 @@ static int size = 15;
 static void parse_args (int argc, char** argv)
 {
 	assert(argv != NULL);
-printf("%d\n", argc);
 	assert(argc >= 0);
 
 	char* size_value = NULL;
