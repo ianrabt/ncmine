@@ -32,7 +32,8 @@ static int size = 15; // size of board
 /**
  * Parses command line arguments.
  *
- * precondition: 
+ * precondition: argc >=0 and argv isn't NULL.
+ * postcondition: size and color_output are set as specified by the user.
  */
 static void parse_args (int argc, char** argv)
 {
@@ -77,6 +78,7 @@ int main (int argc, char** argv)
 	Mine **board = create_board(size, .15);
 
 	startd(size);
+	set_color_output(color_output);
 	bool gameover = false;
 	while (!gameover) {
 		int x, y;

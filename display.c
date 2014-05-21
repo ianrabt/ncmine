@@ -5,18 +5,27 @@
 #include "display.h"
 #include "mine.h"
 
-WINDOW *board_win;
-WINDOW *info_win;
-static int prev_y = 0, prev_x = 0;
+// misc. state variables:
+static WINDOW *board_win; // main window
+static WINDOW *info_win; // TODO: window with help info.
+static int prev_y = 0, prev_x = 0; // used for resetting the cursor position
+			// after calling printd or redrawing.
 
 // defaults to true if supported when set later by startd.
 static bool color_output = false;
 
+/**
+ * Resets the cursor to its previous position. set_cur must have been called
+ * beforehand for this method to work as intended. 
+ */
 void reset_cur(void)
 {
 	move(prev_y, prev_x);
 }
 
+/**
+ * Saves the cursor's position. The position may then be reset by reset_cur.
+ */
 void set_cur(void)
 {
 	getyx(stdscr, prev_y, prev_x);
@@ -43,6 +52,13 @@ void move_cur_center(void)
 
 void mvwincenter(WINDOW *win);
 void init_colors(void);
+
+/**
+ * Starts the ncurses display, as well as some essential variables and
+ * settings. Must be called to use any other methods.
+ *
+ * @return: non zero value on failure.
+ */
 int startd(int size)
 {
 	char *title = "MINESWEEPER";
@@ -53,7 +69,7 @@ int startd(int size)
 	// set some settings
 	initscr();
 	color_output = has_colors();
-	if (color_output) // don't sett up colors if they're not supported.
+	if (color_output) // don't set up colors if they're not supported.
 		init_colors();
 	cbreak();
 	keypad(stdscr, true);
@@ -94,13 +110,18 @@ void mvwincenter(WINDOW *win)
 }
 
 /**
- *
+ * TODO: implement
  */
 void init_colors(void)
 {
 	//
 }
 
+/**
+ * Cleans up and exits ncurses.
+ *
+ * @return: non zero value on failure.
+ */
 int exitd(void)
 {
 	delwin(board_win);
@@ -111,7 +132,7 @@ int exitd(void)
 static void setmineattr(Mine* mine)
 {
 	if (color_output) {
-		// set attr
+		// TODO: implement
 	}
 }
 
@@ -224,7 +245,15 @@ void get_board_yx(int *y, int *x)
 	*x = (xcur - xwin - 1)/2;
 }
 	
-
+/**
+ * Gets user input. Specifically mine coordinates and an opperation to apply to
+ * those coordinates.
+ * 
+ * precondition: x and y aren't NULL.
+ *
+ * postcondition: *x and *y are set to valid coordinates. getin will continue
+ * 	to prompt for input until the user supplied is valid.
+ */
 enum operation getin(int *x, int *y)
 {
 	assert(y != NULL);
