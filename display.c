@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <string.h>
+#include <stdbool.h>
 #include <assert.h>
 #include "display.h"
 #include "mine.h"
@@ -7,6 +8,9 @@
 WINDOW *board_win;
 WINDOW *info_win;
 static int prev_y = 0, prev_x = 0;
+
+// defaults to true if supported when set later by startd.
+static bool color_output = false;
 
 void reset_cur(void)
 {
@@ -18,6 +22,17 @@ void set_cur(void)
 	getyx(stdscr, prev_y, prev_x);
 }
 
+/**
+ * Turns color output on and off. Will take a board refresh (call to printd) to
+ * update. This method will not enable color output if the terminal does not
+ * support it.
+ */
+void set_color_output(bool enabled)
+{
+	if (has_colors())
+		color_output = enabled;
+}
+
 void move_cur_center(void)
 {
 	getbegyx(board_win, prev_y, prev_x);
@@ -27,6 +42,7 @@ void move_cur_center(void)
 }
 
 void mvwincenter(WINDOW *win);
+void init_colors(void);
 int startd(int size)
 {
 	char *title = "MINESWEEPER";
@@ -36,6 +52,9 @@ int startd(int size)
 
 	// set some settings
 	initscr();
+	color_output = has_colors();
+	if (color_output) // don't sett up colors if they're not supported.
+		init_colors();
 	cbreak();
 	keypad(stdscr, true);
 	noecho();
@@ -74,11 +93,26 @@ void mvwincenter(WINDOW *win)
 	mvwin(board_win, max_x/2 - win_x/2, max_y/2 - win_y/2); 
 }
 
+/**
+ *
+ */
+void init_colors(void)
+{
+	//
+}
+
 int exitd(void)
 {
 	delwin(board_win);
 	endwin();
 	return 0;
+}
+
+static void setmineattr(Mine* mine)
+{
+	if (color_output) {
+		// set attr
+	}
 }
 
 char getminech(Mine* mine)
@@ -111,7 +145,9 @@ void printd(int size, Mine **board)
 	for (int y = 0; y < size; y++) {
 		assert(board[y] != NULL);
 		for (int x = 0; x < size; x++) {
-			wprintw(board_win, " %c", getminech(&board[x][y]));
+			Mine* mine = &board[x][y];
+			setmineattr(mine);
+			wprintw(board_win, " %c", getminech(mine));
 		}
 		wprintw(board_win, "\n");
 	}

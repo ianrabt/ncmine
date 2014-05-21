@@ -25,7 +25,8 @@ static char* version =
 	"Ncurses Minesweeper: 0.2";
 
 // runtime options:
-static bool color_output = true; // defaults to true, display.c will disable color output if unsupported.
+static bool color_output = true; // defaults to true, display.c will disable
+			// color output if unsupported, or if the user disables it.
 static int size = 15; // size of board
 
 /**
