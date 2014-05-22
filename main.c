@@ -91,7 +91,7 @@ int main (int argc, char** argv)
 			break;
 		case REVEAL_MINE:
 			reveal_mines(x, y, size, board);
-			if (is_mine(&board[x][y]))
+			if (IS_MINE(board[x][y]))
 				gameover = true;
 			break;
 		case QUIT:

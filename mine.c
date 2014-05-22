@@ -10,12 +10,6 @@ bool is_valid(int x, int y, int size)
 	return x >= 0 && y >= 0 && x < size && y < size;
 }
 
-bool is_mine(Mine *mine)
-{
-	assert(mine != NULL);
-	return mine->adj_mines == 9;
-}
-
 void toggle_flag(Mine *mine)
 {
 	assert(mine != NULL);

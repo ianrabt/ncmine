@@ -141,7 +141,7 @@ char getminech(Mine* mine)
 	assert(mine != NULL);
 
 	if (mine->visible) {
-		if (is_mine(mine)) {
+		if (IS_MINE(*mine)){
 			return '@';
 		} else {
 			return mine->adj_mines + (int) '0';
