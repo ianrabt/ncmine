@@ -16,12 +16,6 @@ bool is_mine(Mine *mine)
 	return mine->adj_mines == 9;
 }
 
-bool is_flagged(Mine *mine)
-{
-	assert(mine != NULL);
-	return mine->flagged;
-}
-
 void toggle_flag(Mine *mine)
 {
 	assert(mine != NULL);

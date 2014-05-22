@@ -28,6 +28,5 @@ void reveal_board(int size, Mine** board);
 void reveal_mines(int x, int y, int size, Mine** board);
 void toggle_flag(Mine *mine);
 bool is_mine(Mine *mine);
-bool is_flagged(Mine *mine);
 
 #endif

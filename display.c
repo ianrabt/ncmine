@@ -146,7 +146,7 @@ char getminech(Mine* mine)
 		} else {
 			return mine->adj_mines + (int) '0';
 		}
-	} else if(is_flagged(mine)) {
+	} else if(mine->flagged) {
 		return 'f';
 	} else {
 		return ' ';
