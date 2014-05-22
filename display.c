@@ -11,8 +11,15 @@ static WINDOW *info_win; // TODO: window with help info.
 static int prev_y = 0, prev_x = 0; // used for resetting the cursor position
 			// after calling printd or redrawing.
 
-// defaults to true if supported when set later by startd.
-static bool color_output = false;
+// color variables:
+static bool color_output = false; // defaults to true if supported when set later by startd.
+enum colors {
+    FLAGGED,    // the mine is flagged
+    MINE,       // is a mine. only used on game over.
+    LOW,        // low number of adj mines.
+    MED,        // medium number of adj mines.
+    HIGH        // high number of adj mines.
+};
 
 /**
  * Resets the cursor to its previous position. set_cur must have been called
@@ -51,7 +58,7 @@ void move_cur_center(void)
 }
 
 void mvwincenter(WINDOW *win);
-void init_colors(void);
+static void init_colors(void);
 
 /**
  * Starts the ncurses display, as well as some essential variables and
@@ -112,9 +119,15 @@ void mvwincenter(WINDOW *win)
 /**
  * TODO: implement
  */
-void init_colors(void)
+static void init_colors(void)
 {
-	//
+    start_color();
+
+    init_pair(FLAGGED, COLOR_RED, COLOR_BLACK);
+    init_pair(MINE, COLOR_RED, COLOR_BLACK);
+    init_pair(LOW, COLOR_RED, COLOR_BLACK);
+    init_pair(MED, COLOR_RED, COLOR_BLACK);
+    init_pair(HIGH, COLOR_RED, COLOR_BLACK);
 }
 
 /**
