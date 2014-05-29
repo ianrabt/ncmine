@@ -13,12 +13,16 @@ static int prev_y = 0, prev_x = 0; // used for resetting the cursor position
 
 // color variables:
 static bool color_output = false; // defaults to true if supported when set later by startd.
-enum colors {
+enum Color {    // These are the color attributes that a mine may have.
+	NONE  = 0,  // preform no color action
+	ZERO,       //   0 adj mines. Cannot be 0, as that is reserved by COLOR_PAIR
+    ONE,        //   1 adj mine.
+    TWO,        //   2 adj mines.
+    THREE,      //   3 adj mines.
+    MED,        // 4-6 adj mines.
+    HIGH,       // 7-8 adj mines.
     FLAGGED,    // the mine is flagged
-    MINE,       // is a mine. only used on game over.
-    LOW,        // low number of adj mines.
-    MED,        // medium number of adj mines.
-    HIGH        // high number of adj mines.
+    MINE        // is a mine. only used on game over.
 };
 
 /**
@@ -84,6 +88,7 @@ int startd(int size)
 
 	// start screen:
 	getmaxyx(stdscr, row, col);
+	init_pair(20, COLOR_BLUE, COLOR_RED);
 	attron(A_BOLD);
 	mvprintw(row/2-1, (col-strlen(title))/2, "%s", title);
 	attroff(A_BOLD);
@@ -123,11 +128,14 @@ static void init_colors(void)
 {
     start_color();
 
-    init_pair(FLAGGED, COLOR_RED, COLOR_BLACK);
-    init_pair(MINE, COLOR_RED, COLOR_BLACK);
-    init_pair(LOW, COLOR_RED, COLOR_BLACK);
-    init_pair(MED, COLOR_RED, COLOR_BLACK);
-    init_pair(HIGH, COLOR_RED, COLOR_BLACK);
+    init_pair(ZERO,    COLOR_BLUE,    COLOR_BLACK);
+    init_pair(ONE,     COLOR_CYAN,    COLOR_BLACK);
+    init_pair(TWO,     COLOR_GREEN,   COLOR_BLACK);
+    init_pair(THREE,   COLOR_YELLOW,  COLOR_BLACK);
+    init_pair(MED,     COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(HIGH,    COLOR_RED,     COLOR_BLACK);
+    init_pair(MINE,    COLOR_RED,     COLOR_BLACK);
+    init_pair(FLAGGED, COLOR_BLACK,   COLOR_RED);
 }
 
 /**
@@ -142,11 +150,43 @@ int exitd(void)
 	return 0;
 }
 
-static void setmineattr(Mine* mine)
+static enum Color getmineattr(Mine* mine)
 {
-	if (color_output) {
-		// TODO: implement
+	assert(mine != NULL);
+	if(!color_output) {
+		return NONE;
 	}
+	enum Color color = NONE;
+
+	if (mine->visible) {
+		switch(mine->adj_mines) {
+		case 0:
+			color = ZERO;
+			break;
+		case 1:
+			color = ONE;
+			break;
+		case 2:
+			color = TWO;
+			break;
+		case 3:
+			color = THREE;
+			break;
+		case 4:
+		case 5:
+		case 6:
+			color = MED;
+			break;
+		case 9:
+			color = MINE;
+			break;
+		default:
+			color = HIGH;
+		}
+	} else if(mine->flagged) {
+		color = FLAGGED;
+	}
+	return color;
 }
 
 char getminech(Mine* mine)
@@ -179,9 +219,19 @@ void printd(int size, Mine **board)
 	for (int y = 0; y < size; y++) {
 		assert(board[y] != NULL);
 		for (int x = 0; x < size; x++) {
-			Mine* mine = &board[x][y];
-			setmineattr(mine);
-			wprintw(board_win, " %c", getminech(mine));
+			Mine* mine = &board[x][y]; // the mine currently being printed
+			
+			// first, print a space w/o any attributes:
+			wprintw(board_win, " ");
+			// now get the color pair to use:
+			enum Color c = getmineattr(mine);
+			if (c == NONE) {
+				wprintw(board_win, "%c", getminech(mine));
+			} else {
+				wattron(board_win, COLOR_PAIR(c));
+				wprintw(board_win, "%c", getminech(mine));
+				wattroff(board_win, COLOR_PAIR(c));
+			}
 		}
 		wprintw(board_win, "\n");
 	}
