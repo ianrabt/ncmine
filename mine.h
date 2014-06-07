@@ -15,11 +15,17 @@ typedef struct
 	bool flagged;
 } Mine;
 
-enum operation{
+enum operation {
 	UNDEFINED, ///< No operation should be taken
 	REVEAL_MINE,
 	TOGGLE_FLAG,
 	QUIT
+};
+
+struct instruction {
+	enum operation op;
+	int x;
+	int y;
 };
 
 bool is_valid(int x, int y, int size);

@@ -6,6 +6,6 @@ int startd();
 int exitd(void);
 void printd(int size, Mine **board);
 
-enum operation getin(int *x, int *y);
+struct instruction getin(void);
 
 #endif

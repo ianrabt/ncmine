@@ -189,13 +189,11 @@ void get_board_yx(int *y, int *x)
 }
 	
 
-enum operation getin(int *x, int *y)
+struct instruction getin(void)
 {
-	assert(y != NULL);
-	assert(x != NULL);
-
 	reset_cur();
-	enum operation op = UNDEFINED;
+	struct instruction turn;
+	turn.op = UNDEFINED;
 	do {
 		int in = getch();
 		offsetcur(0, 0);
@@ -219,19 +217,19 @@ enum operation getin(int *x, int *y)
 		case ' ':
 		case '\r':
 		case '\n':
-			op = REVEAL_MINE;
+			turn.op = REVEAL_MINE;
 			break;
 		case 'f':
-			op = TOGGLE_FLAG;
+			turn.op = TOGGLE_FLAG;
 			break;
 		case 'q':
-			op = QUIT;
+			turn.op = QUIT;
 			break;
 		}
 
-	} while (op == UNDEFINED);
+	} while (turn.op == UNDEFINED);
 
-	get_board_yx(y, x);
+	get_board_yx(&(turn.y), &(turn.x));
 	set_cur();
-	return op;
+	return turn;
 }

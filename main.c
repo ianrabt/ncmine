@@ -40,6 +40,9 @@ static void parse_args (int argc, char** argv)
 
 	char* size_value = NULL;
 	int c;
+
+//	int h_size = 0;
+//	struct instruction *history = (struct instruction *) malloc(h_size * sizeof(struct instruction));
 	
 	opterr = 0;
 	
@@ -78,17 +81,16 @@ int main (int argc, char** argv)
 	startd(size);
 	bool gameover = false;
 	while (!gameover) {
-		int x, y;
-		enum operation op;
+		struct instruction in;
 		printd(size, board);
-		op = getin(&x, &y);
-		switch (op) {
+		in = getin();
+		switch (in.op) {
 		case TOGGLE_FLAG:
-			toggle_flag(&board[x][y]);
+			toggle_flag(&board[in.x][in.y]);
 			break;
 		case REVEAL_MINE:
-			reveal_mines(x, y, size, board);
-			if (is_mine(&board[x][y]))
+			reveal_mines(in.x, in.y, size, board);
+			if (is_mine(&board[in.x][in.y]))
 				gameover = true;
 			break;
 		case QUIT:
