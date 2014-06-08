@@ -41,9 +41,6 @@ static void parse_args (int argc, char** argv)
 	char* size_value = NULL;
 	int c;
 
-//	int h_size = 0;
-//	struct instruction *history = (struct instruction *) malloc(h_size * sizeof(struct instruction));
-	
 	opterr = 0;
 	
 	while ((c = getopt(argc, argv, "hvc")) != -1) {
