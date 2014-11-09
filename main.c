@@ -90,9 +90,13 @@ int main (int argc, char** argv)
 			toggle_flag(&board[x][y]);
 			break;
 		case REVEAL_MINE:
-			reveal_mines(x, y, size, board);
-			if (IS_MINE(board[x][y]))
-				gameover = true;
+			if (board[x][y].flagged) {
+				toggle_flag(&board[x][y]);
+			} else {
+				reveal_mines(x, y, size, board);
+				if (IS_MINE(board[x][y]))
+					gameover = true;
+			}
 			break;
 		case QUIT:
 			exitd();

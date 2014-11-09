@@ -32,7 +32,7 @@ Mine **create_board(int size, double mine_prob)
 {
 	// allocating memory for the board.
 	Mine **board;
-	board = (Mine **) malloc(sizeof(Mine *) * size);
+	board = malloc(sizeof(Mine *) * size);
 	if(board == NULL) {
 		fprintf(stderr, "out of memory.\n");
 		abort();
