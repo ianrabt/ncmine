@@ -1,3 +1,5 @@
+*Update from 2020* -- I am no longer working on this, but it was the first program I ever wrote in C! So, this repo has a lot of sentimental value.
+
 This is in active development, no stable release currently.
 Currently is playable. Terminal resize support still needs to be added.
 
