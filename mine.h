@@ -2,6 +2,8 @@
 #define MINE_H
 #include <stdbool.h>
 
+#define IS_MINE(mine) ((mine).adj_mines == 9)
+
 //! The mine type.
 /**
  * Used for each square in the minesweeper grid.
@@ -27,7 +29,5 @@ Mine **create_board(int size, double mine_prob);
 void reveal_board(int size, Mine** board);
 void reveal_mines(int x, int y, int size, Mine** board);
 void toggle_flag(Mine *mine);
-bool is_mine(Mine *mine);
-bool is_flagged(Mine *mine);
 
 #endif

@@ -25,13 +25,15 @@ static char* version =
 	"Ncurses Minesweeper: 0.2";
 
 // runtime options:
-static bool color_output = true; // defaults to true, display.c will disable color output if unsupported.
+static bool color_output = true; // defaults to true, display.c will disable
+			// color output if unsupported, or if the user disables it.
 static int size = 15; // size of board
 
 /**
  * Parses command line arguments.
  *
- * precondition: 
+ * precondition: argc >=0 and argv isn't NULL.
+ * postcondition: size and color_output are set as specified by the user.
  */
 static void parse_args (int argc, char** argv)
 {
@@ -76,6 +78,7 @@ int main (int argc, char** argv)
 	Mine **board = create_board(size, .15);
 
 	startd(size);
+	set_color_output(color_output);
 	bool gameover = false;
 	while (!gameover) {
 		int x, y;
@@ -87,9 +90,13 @@ int main (int argc, char** argv)
 			toggle_flag(&board[x][y]);
 			break;
 		case REVEAL_MINE:
-			reveal_mines(x, y, size, board);
-			if (is_mine(&board[x][y]))
-				gameover = true;
+			if (board[x][y].flagged) {
+				toggle_flag(&board[x][y]);
+			} else {
+				reveal_mines(x, y, size, board);
+				if (IS_MINE(board[x][y]))
+					gameover = true;
+			}
 			break;
 		case QUIT:
 			exitd();

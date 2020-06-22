@@ -10,18 +10,6 @@ bool is_valid(int x, int y, int size)
 	return x >= 0 && y >= 0 && x < size && y < size;
 }
 
-bool is_mine(Mine *mine)
-{
-	assert(mine != NULL);
-	return mine->adj_mines == 9;
-}
-
-bool is_flagged(Mine *mine)
-{
-	assert(mine != NULL);
-	return mine->flagged;
-}
-
 void toggle_flag(Mine *mine)
 {
 	assert(mine != NULL);
@@ -44,7 +32,7 @@ Mine **create_board(int size, double mine_prob)
 {
 	// allocating memory for the board.
 	Mine **board;
-	board = (Mine **) malloc(sizeof(Mine *) * size);
+	board = malloc(sizeof(Mine *) * size);
 	if(board == NULL) {
 		fprintf(stderr, "out of memory.\n");
 		abort();
